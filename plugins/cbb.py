@@ -102,11 +102,13 @@ async def cb_handler(client: Bot, query: CallbackQuery):
         shortlink = verify_status.get('link')
         await query.message.delete()
 
-        btn = [
-            [InlineKeyboardButton("ᴏᴘᴇɴ ʟɪɴᴋ", url=shortlink),
-             InlineKeyboardButton("ᴛᴜᴛᴏʀɪᴀʟ", url=TUT_VID)],
-            [InlineKeyboardButton("ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ", callback_data="premium")]
-        ]
+        btn = []
+        first_row = []
+        if shortlink:
+            first_row.append(InlineKeyboardButton("ᴏᴘᴇɴ ʟɪɴᴋ", url=shortlink))
+        first_row.append(InlineKeyboardButton("ᴛᴜᴛᴏʀɪᴀʟ", url=TUT_VID))
+        btn.append(first_row)
+        btn.append([InlineKeyboardButton("ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ", callback_data="premium")])
         await client.send_message(
             chat_id=query.message.chat.id,
             text=(
