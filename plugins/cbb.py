@@ -85,12 +85,37 @@ async def cb_handler(client: Bot, query: CallbackQuery):
                             "ADMIN 24/7", url=(SCREENSHOT_URL)
                         )
                     ],
-                    [InlineKeyboardButton("🔒 Close", callback_data="close")],
+                    [
+                        InlineKeyboardButton("ʙᴀᴄᴋ", callback_data="back_to_verify"),
+                        InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close"),
+                    ],
                 ]
             )
         )
 
 
+
+    elif data == "back_to_verify":
+        user_id = query.from_user.id
+        verify_status = await db.get_verify_status(user_id)
+        shortlink = verify_status.get('link')
+        await query.message.delete()
+
+        btn = [
+            [InlineKeyboardButton("ᴏᴘᴇɴ ʟɪɴᴋ", url=shortlink),
+             InlineKeyboardButton("ᴛᴜᴛᴏʀɪᴀʟ", url=TUT_VID)],
+            [InlineKeyboardButton("ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ", callback_data="premium")]
+        ]
+        await client.send_message(
+            chat_id=query.message.chat.id,
+            text=(
+                f"Your token has expired. Please refresh to continue..\n\n"
+                f"<b>Token Timeout:</b> {get_exp_time(VERIFY_EXPIRE)}\n\n"
+                "<b>What is token?</b>\n"
+                f"Pass one ad to use bot for {get_exp_time(VERIFY_EXPIRE)}"
+            ),
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
 
     elif data == "close":
         await query.message.delete()
